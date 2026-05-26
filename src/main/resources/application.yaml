@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: api_healthy_pet
+  datasource:
+    url: jdbc:postgresql://db.htetzdkycgpnobbhqthb.supabase.co:5432/postgres?currentSchema=healthy_pets_bd
+    username: postgres
+    password: ${PASSWORD}
