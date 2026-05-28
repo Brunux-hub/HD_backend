@@ -5,3 +5,6 @@ spring:
     url: jdbc:postgresql://db.htetzdkycgpnobbhqthb.supabase.co:5432/postgres?currentSchema=healthy_pets_bd
     username: postgres
     password: ${PASSWORD}
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
