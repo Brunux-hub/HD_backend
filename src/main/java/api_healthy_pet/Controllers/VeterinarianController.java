@@ -1,8 +1,6 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.UserRequest;
 import api_healthy_pet.Dtos.Request.VeterinarianRequest;
-import api_healthy_pet.Dtos.Response.UserResponse;
 import api_healthy_pet.Dtos.Response.VeterinarianResponse;
 import api_healthy_pet.Services.VeterinarianService;
 import jakarta.validation.Valid;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,7 @@ public class VeterinarianController {
     public ResponseEntity<VeterinarianResponse> createVeterinarian(@Valid @RequestBody VeterinarianRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(veterinarianService.createUser(request));
+                .body(veterinarianService.create(request));
     }
     @GetMapping("/{idVeterinarian}")
     public ResponseEntity<VeterinarianResponse> getVeterinarianById(@PathVariable Long idVeterinarian){
@@ -32,8 +31,13 @@ public class VeterinarianController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VeterinarianResponse>> getAllVeterinarian(){
+    public ResponseEntity<List<VeterinarianResponse>> getAllVeterinarians(){
         return ResponseEntity.ok().body(veterinarianService.findAll());
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<VeterinarianResponse>> getAllAvailableVeterinarians (@RequestParam LocalDateTime date){
+        return ResponseEntity.ok().body(veterinarianService.findAllAvailable(date));
     }
 
     @PutMapping("/{idVeterinarian}")
@@ -43,7 +47,7 @@ public class VeterinarianController {
 
     @DeleteMapping("/{idVeterinarian}")
     public ResponseEntity<Void> deleteVeterinarianById(@PathVariable Long idVeterinarian){
-        veterinarianService.deleteVeterinarianById(idVeterinarian);
+        veterinarianService.deleteById(idVeterinarian);
         return ResponseEntity.noContent().build();
     }
 
