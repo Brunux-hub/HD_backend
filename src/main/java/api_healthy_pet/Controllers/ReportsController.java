@@ -1,6 +1,7 @@
 package api_healthy_pet.Controllers;
 
 import api_healthy_pet.Dtos.Response.AppointmentResponse;
+import api_healthy_pet.Dtos.Response.MedicalHistoryResponse;
 import api_healthy_pet.Enums.AppointmentStatus;
 import api_healthy_pet.Services.ReportsService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,10 @@ public class ReportsController {
     }
 
     // Servicios Realizados
-
+    @GetMapping("/completed-services")
+    public List<MedicalHistoryResponse> getCompletedServices() {
+        return reportService.getCompletedServices();
+    }
 
     // Programación de Citas
     @GetMapping("/appointments")
