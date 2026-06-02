@@ -1,16 +1,11 @@
 package api_healthy_pet.Services;
 
 import api_healthy_pet.Dtos.Response.AppointmentResponse;
+import api_healthy_pet.Dtos.Response.MedicalHistoryResponse;
 import api_healthy_pet.Dtos.Response.ServiceResponse;
 import api_healthy_pet.Enums.AppointmentStatus;
-import api_healthy_pet.Mappers.AppointmentMapper;
-import api_healthy_pet.Mappers.PetMapper;
-import api_healthy_pet.Mappers.VeterinarianMapper;
-import api_healthy_pet.Repositories.AppointmentRepository;
-import api_healthy_pet.Repositories.PetRepository;
-import api_healthy_pet.Mappers.ServiceMapper;
-import api_healthy_pet.Repositories.ServicesRepository;
-import api_healthy_pet.Repositories.VeterinarianRepository;
+import api_healthy_pet.Mappers.*;
+import api_healthy_pet.Repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,17 +20,28 @@ public class ReportsService {
     private final AppointmentRepository appointmentRepository;
     private final PetRepository petRepository;
     private final VeterinarianRepository veterinarianRepository;
+    private final MedicalHistoryRepository medicalHistoryRepository;
     // Mappers
     private final ServiceMapper serviceMapper;
     private final AppointmentMapper appointmentMapper;
     private final PetMapper petMapper;
     private final VeterinarianMapper veterinarianMapper;
+    private final MedicalHistoryMapper medicalHistoryMapper;
 
     //Filtrar Citas por Status
     public List<AppointmentResponse> getAppointmentsByStatus(AppointmentStatus status){
         return appointmentRepository.findByStatus(status)
                 .stream()
                 .map(appointmentMapper::toResponse)
+                .toList();
+    }
+
+    // Obtener Servicios Completados
+    public List<MedicalHistoryResponse> getCompletedServices() {
+        return medicalHistoryRepository
+                .findByAppointmentStatus(AppointmentStatus.CLOSED)
+                .stream()
+                .map(medicalHistoryMapper::toResponse)
                 .toList();
     }
 
