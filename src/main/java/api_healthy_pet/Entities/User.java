@@ -1,31 +1,23 @@
 package api_healthy_pet.Entities;
 
-import api_healthy_pet.Enums.UserType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import lombok.Data;
 
+@Data
 @Entity
-@Table(name="users")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    private Long idUser;
+    private Long id;
 
-    private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private UserType type;
-
+    @Column(nullable = false)
+    private String role;
 }

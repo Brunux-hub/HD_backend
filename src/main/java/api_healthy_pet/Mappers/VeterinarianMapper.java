@@ -10,12 +10,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface VeterinarianMapper {
 
-    @Mapping(target = "user.idUser", source = "idUser")
-    Veterinarian toEntity (VeterinarianRequest request);
+    @Mapping(target = "user.id", source = "idUser")
+    Veterinarian toEntity(VeterinarianRequest request);
 
-    @Mapping(target = "userResponse", source = "user")
-    VeterinarianResponse toResponse (Veterinarian veterinarian);
+    VeterinarianResponse toResponse(Veterinarian veterinarian);
 
-    void updateEntityFromRequest (VeterinarianRequest request, @MappingTarget Veterinarian veterinarian);
-
+    void updateEntityFromRequest(VeterinarianRequest request, @MappingTarget Veterinarian veterinarian);
 }

@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface ReceptionistMapper {
 
-    @Mapping(target = "user.idUser", source = "idUser")
+    @Mapping(target = "user.id", source = "idUser")
     Receptionist toEntity (ReceptionistRequest request);
 
     ReceptionistResponse toResponse (Receptionist receptionist);
