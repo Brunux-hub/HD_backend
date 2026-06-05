@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
 @Tag(name = "Autenticacion", description = "Endpoints de login")
 @CrossOrigin(origins = "*")
@@ -22,5 +23,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @Operation(summary = "Obtener usuario actual", description = "Retorna el email del usuario autenticado")
+    @GetMapping("/me")
+    public ResponseEntity<String> me(Principal principal) {
+        return ResponseEntity.ok(principal.getName());
     }
 }
