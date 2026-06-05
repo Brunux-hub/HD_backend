@@ -20,6 +20,7 @@ public class User {
     @Column(name = "id_user")
     private Long idUser;
 
+    @Column(unique = true)
     private String username;
 
     private String password;

@@ -8,6 +8,7 @@ import api_healthy_pet.Mappers.UserMapper;
 import api_healthy_pet.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -17,14 +18,20 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse createUser (UserRequest request){
-        return userMapper.toResponse(userRepository.save(userMapper.toEntity(request)));
+        // map request to entity, encode password, then save
+        var entity = userMapper.toEntity(request);
+        if (entity.getPassword() != null) {
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
+        return userMapper.toResponse(userRepository.save(entity));
     }
 
     public UserResponse authenticate(String username, String password){
         return userRepository.findByUsername(username)
-                .filter(user -> user.getPassword().equals(password))
+                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .map(userMapper::toResponse)
                 .orElseThrow(() -> new UserException("Credenciales inválidas"));
     }
