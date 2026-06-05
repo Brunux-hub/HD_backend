@@ -22,6 +22,13 @@ public class UserService {
         return userMapper.toResponse(userRepository.save(userMapper.toEntity(request)));
     }
 
+    public UserResponse authenticate(String username, String password){
+        return userRepository.findByUsername(username)
+                .filter(user -> user.getPassword().equals(password))
+                .map(userMapper::toResponse)
+                .orElseThrow(() -> new UserException("Credenciales inválidas"));
+    }
+
     public UserResponse findById (Long idUser){
         return userRepository.findById(idUser)
                 .map(userMapper::toResponse)
