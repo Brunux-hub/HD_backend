@@ -18,6 +18,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponse login(LoginRequest request) {
+
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RuntimeException("El email es obligatorio");
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            throw new RuntimeException("La contrasena es obligatoria");
+        }
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Credenciales invalidas"));
 
