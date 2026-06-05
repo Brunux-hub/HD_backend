@@ -1,10 +1,17 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: api_healthy_pet
+
   datasource:
-    url: jdbc:postgresql://db.htetzdkycgpnobbhqthb.supabase.co:5432/postgres?currentSchema=healthy_pets_bd
-    username: postgres
-    password: ${PASSWORD}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   jackson:
     property-naming-strategy: SNAKE_CASE
