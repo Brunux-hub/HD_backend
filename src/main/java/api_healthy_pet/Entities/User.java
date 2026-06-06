@@ -20,12 +20,15 @@ public class User {
     @Column(name = "id_user")
     private Long idUser;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false)
     private UserType type;
 
 }

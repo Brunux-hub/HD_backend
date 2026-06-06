@@ -15,3 +15,7 @@ spring:
 
   jackson:
     property-naming-strategy: SNAKE_CASE
+
+jwt:
+  secret: ${JWT_SECRET:Q2FtYmlhclBvclVuU2VjcmV0b1NlZ3Vyb0RlMzJCeXRlc01pbmltbw==}
+  expiration: ${JWT_EXPIRATION:3600000}

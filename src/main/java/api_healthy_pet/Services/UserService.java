@@ -7,6 +7,7 @@ import api_healthy_pet.Exceptions.UserException;
 import api_healthy_pet.Mappers.UserMapper;
 import api_healthy_pet.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,15 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse createUser (UserRequest request){
-        return userMapper.toResponse(userRepository.save(userMapper.toEntity(request)));
+        validateUsernameAvailability(request.username(), null);
+
+        User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.password()));
+
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     public UserResponse findById (Long idUser){
@@ -37,7 +44,9 @@ public class UserService {
         User user = userRepository.findById(idUser)
                         .orElseThrow(() -> new UserException("Usuario no encontrado"));
 
+        validateUsernameAvailability(request.username(), idUser);
         userMapper.updateEntityFromRequest(request, user);
+        user.setPassword(passwordEncoder.encode(request.password()));
 
         return userMapper.toResponse(userRepository.save(user));
     }
@@ -47,5 +56,13 @@ public class UserService {
             throw new UserException("Usuario no encontrado");
         }
         userRepository.deleteById(idUser);
+    }
+
+    private void validateUsernameAvailability(String username, Long currentUserId) {
+        userRepository.findByUsername(username)
+                .filter(existingUser -> !existingUser.getIdUser().equals(currentUserId))
+                .ifPresent(existingUser -> {
+                    throw new UserException("El username ya está registrado");
+                });
     }
 }
