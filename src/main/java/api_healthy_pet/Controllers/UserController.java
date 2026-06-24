@@ -25,8 +25,8 @@ public class UserController {
                 .body(userService.createUser(request));
     }
     @GetMapping("/{idUser}")
-    public ResponseEntity<List<UserResponse>> getUserById(@PathVariable Long idUser){
-        return ResponseEntity.ok().body(userService.findAll());
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long idUser){
+        return ResponseEntity.ok().body(userService.findById(idUser));
     }
 
     @GetMapping

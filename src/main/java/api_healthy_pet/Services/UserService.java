@@ -7,6 +7,7 @@ import api_healthy_pet.Exceptions.UserException;
 import api_healthy_pet.Mappers.UserMapper;
 import api_healthy_pet.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,15 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserResponse createUser (UserRequest request){
-        return userMapper.toResponse(userRepository.save(userMapper.toEntity(request)));
+    public UserResponse createUser(UserRequest request) {
+        if (userRepository.existsByUsername(request.username())) {
+            throw new UserException("El nombre de usuario ya existe");
+        }
+        User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.password()));
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     public UserResponse findById (Long idUser){
@@ -33,11 +40,19 @@ public class UserService {
                 .stream().map(userMapper::toResponse).toList();
     }
 
-    public UserResponse updateUser (Long idUser, UserRequest request){
+    public UserResponse updateUser(Long idUser, UserRequest request) {
         User user = userRepository.findById(idUser)
-                        .orElseThrow(() -> new UserException("Usuario no encontrado"));
+                .orElseThrow(() -> new UserException("Usuario no encontrado"));
 
-        userMapper.updateEntityFromRequest(request, user);
+        if (!user.getUsername().equals(request.username()) && userRepository.existsByUsername(request.username())) {
+            throw new UserException("El nombre de usuario ya existe");
+        }
+
+        user.setUsername(request.username());
+        user.setType(request.type());
+        if (request.password() != null && !request.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
 
         return userMapper.toResponse(userRepository.save(user));
     }
