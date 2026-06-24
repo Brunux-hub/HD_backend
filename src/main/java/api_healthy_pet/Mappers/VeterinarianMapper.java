@@ -13,7 +13,6 @@ public interface VeterinarianMapper {
     @Mapping(target = "user.idUser", source = "idUser")
     Veterinarian toEntity (VeterinarianRequest request);
 
-    @Mapping(target = "userResponse", source = "user")
     VeterinarianResponse toResponse (Veterinarian veterinarian);
 
     void updateEntityFromRequest (VeterinarianRequest request, @MappingTarget Veterinarian veterinarian);
