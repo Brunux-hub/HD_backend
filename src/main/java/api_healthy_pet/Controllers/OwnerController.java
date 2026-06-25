@@ -1,9 +1,7 @@
 package api_healthy_pet.Controllers;
 
 import api_healthy_pet.Dtos.Request.OwnerRequest;
-import api_healthy_pet.Dtos.Request.ReceptionistRequest;
 import api_healthy_pet.Dtos.Response.OwnerResponse;
-import api_healthy_pet.Dtos.Response.ReceptionistResponse;
 import api_healthy_pet.Services.OwnerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

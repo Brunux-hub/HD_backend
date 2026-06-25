@@ -1,13 +1,9 @@
 package api_healthy_pet.Services;
 
 import api_healthy_pet.Dtos.Request.OwnerRequest;
-import api_healthy_pet.Dtos.Request.VeterinarianRequest;
 import api_healthy_pet.Dtos.Response.OwnerResponse;
-import api_healthy_pet.Dtos.Response.VeterinarianResponse;
 import api_healthy_pet.Entities.Owner;
-import api_healthy_pet.Entities.Veterinarian;
 import api_healthy_pet.Exceptions.OwnerException;
-import api_healthy_pet.Exceptions.VeterinarianException;
 import api_healthy_pet.Mappers.OwnerMapper;
 import api_healthy_pet.Repositories.OwnerRepository;
 import lombok.RequiredArgsConstructor;
