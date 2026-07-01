@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,15 @@ public class OwnerController {
                 .status(HttpStatus.CREATED)
                 .body(ownerService.create(request));
     }
+    // Owner del usuario logueado (para saber, tras el login, si es cliente).
+    // 200 + Owner si es cliente; 204 si no lo es (staff).
+    @GetMapping("/me")
+    public ResponseEntity<OwnerResponse> getMyOwner(Principal principal){
+        return ownerService.findByUsername(principal.getName())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
     @GetMapping("/{idOwner}")
     public ResponseEntity<OwnerResponse> getOwnerByID(@PathVariable Long idOwner){
         return ResponseEntity.ok().body(ownerService.findById(idOwner));

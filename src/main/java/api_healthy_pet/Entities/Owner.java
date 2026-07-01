@@ -17,6 +17,12 @@ public class Owner {
     @Column(name = "id_owner")
     private Long idOwner;
 
+    // Un cliente puede tener una cuenta de acceso (User). Es opcional:
+    // los Owners creados por el staff pueden no tener login.
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user")
+    private User user;
+
     private String names;
     private String lastNames;
     private String email;
