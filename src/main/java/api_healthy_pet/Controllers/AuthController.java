@@ -1,9 +1,9 @@
 package api_healthy_pet.Controllers;
 
+import api_healthy_pet.Dtos.Request.ClientRegisterRequest;
 import api_healthy_pet.Dtos.Request.LoginRequest;
-import api_healthy_pet.Dtos.Request.RegisterRequest;
 import api_healthy_pet.Dtos.Response.AuthResponse;
-import api_healthy_pet.Dtos.Response.UserResponse;
+import api_healthy_pet.Dtos.Response.OwnerResponse;
 import api_healthy_pet.Services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    // Registro público de clientes: crea User (login) + Owner (ficha).
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    public ResponseEntity<OwnerResponse> register(@Valid @RequestBody ClientRegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerClient(request));
     }
 }

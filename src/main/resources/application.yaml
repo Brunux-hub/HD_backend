@@ -9,8 +9,17 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    hikari:
+      # Mantener conexiones "calientes" evita el handshake TLS a Supabase en cada request.
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      keepalive-time: 30000
+      max-lifetime: 1800000
 
   jpa:
+    # Evita mantener la sesión de Hibernate abierta durante el render (lo advertía el log).
+    open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   jackson:

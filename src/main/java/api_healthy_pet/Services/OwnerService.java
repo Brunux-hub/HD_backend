@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,12 @@ public class OwnerService {
     public List<OwnerResponse> findAll(){
         return ownerRepository.findAll()
                 .stream().map(ownerMapper::toResponse).toList();
+    }
+
+    // Devuelve el Owner del usuario logueado (por username). Vacío si el usuario
+    // no es cliente (p.ej. staff con ficha de vet/recepcionista).
+    public Optional<OwnerResponse> findByUsername(String username){
+        return ownerRepository.findByUser_Username(username).map(ownerMapper::toResponse);
     }
 
     public OwnerResponse updateById (Long idOwner, OwnerRequest request){
