@@ -1,4 +1,13 @@
 package api_healthy_pet.Dtos.Response;
 
-public record OwnerResponse(Long idOwner, String names, String lastNames, String email, String phoneNumber, String address) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record OwnerResponse(
+        @JsonProperty("idOwner") Long idOwner,
+        String names,
+        @JsonProperty("lastNames") String lastNames,
+        String email,
+        @JsonProperty("phoneNumber") String phoneNumber,
+        String address
+) {
 }

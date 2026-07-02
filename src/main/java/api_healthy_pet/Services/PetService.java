@@ -39,7 +39,11 @@ public class PetService {
 
         petMapper.updateEntityFromRequest(request, pet);
 
-        return petMapper.toResponse(petRepository.save(pet));
+        Pet updatedPet = petRepository.save(pet);
+
+        return petRepository.findById(updatedPet.getIdPet())
+                .map(petMapper::toResponse)
+                .orElseThrow(() -> new PetException("Mascota no encontrada"));
     }
 
     public void deleteById (Long idPet) {

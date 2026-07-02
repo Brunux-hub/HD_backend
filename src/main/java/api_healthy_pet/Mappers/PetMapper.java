@@ -13,8 +13,10 @@ public interface PetMapper {
     @Mapping(target = "owner.idOwner", source = "idOwner")
     Pet toEntity(PetRequest request);
 
+    @Mapping(target = "petGender", source = "sex")
     PetResponse toResponse (Pet pet);
 
+    @Mapping(target = "owner.idOwner", source = "idOwner")
     void updateEntityFromRequest (PetRequest request, @MappingTarget Pet pet);
 
 }
