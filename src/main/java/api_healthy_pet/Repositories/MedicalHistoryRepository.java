@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory, Long> {
     List<MedicalHistory> findByAppointmentStatus(AppointmentStatus status);
+
+    List<MedicalHistory> findByAppointment_Pet_IdPet(Long idPet);
 }

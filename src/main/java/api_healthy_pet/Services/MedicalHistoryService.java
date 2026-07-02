@@ -42,6 +42,11 @@ public class MedicalHistoryService {
         return medicalHistoryMapper.toResponse(medicalHistoryRepository.save(medicalHistory));
     }
 
+    public List<MedicalHistoryResponse> findByPetId(Long idPet) {
+        return medicalHistoryRepository.findByAppointment_Pet_IdPet(idPet)
+                .stream().map(medicalHistoryMapper::toResponse).toList();
+    }
+
     public void deleteById (Long idMedicalHistory) {
         if (!medicalHistoryRepository.existsById(idMedicalHistory)){
             throw new MedicalHistoryException("Historial medico no encontrado");

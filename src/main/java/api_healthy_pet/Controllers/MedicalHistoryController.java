@@ -24,6 +24,11 @@ public class MedicalHistoryController {
                 .status(HttpStatus.CREATED)
                 .body(medicalHistoryService.create(request));
     }
+    @GetMapping("/pet/{idPet}")
+    public ResponseEntity<List<MedicalHistoryResponse>> getMedicalHistoryByPet(@PathVariable Long idPet) {
+        return ResponseEntity.ok().body(medicalHistoryService.findByPetId(idPet));
+    }
+
     @GetMapping("/{idMedicalHistory}")
     public ResponseEntity<MedicalHistoryResponse> getMedicalHistoryByID(@PathVariable Long idMedicalHistory){
         return ResponseEntity.ok().body(medicalHistoryService.findById(idMedicalHistory));
