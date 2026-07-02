@@ -48,7 +48,7 @@ public class AuthService {
         return new AuthResponse(jwtService.generateToken(userDetails));
     }
 
-    // Alta de usuario "pelado" (username/password/type) — uso administrativo.
+    // Alta de usuario (username/password/type) — uso administrativo.
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new UserException("El username ya está registrado");

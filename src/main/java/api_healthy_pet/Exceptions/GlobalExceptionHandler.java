@@ -21,6 +21,12 @@ public class GlobalExceptionHandler {
         return buildResponse(status, ex.getMessage());
     }
 
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<ErrorResponse> handleServiceException(ServiceException ex) {
+        HttpStatus status = resolveEntityStatus(ex.getMessage());
+        return buildResponse(status, ex.getMessage());
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
@@ -53,6 +59,10 @@ public class GlobalExceptionHandler {
     }
 
     private HttpStatus resolveUserStatus(String message) {
+        return resolveEntityStatus(message);
+    }
+
+    private HttpStatus resolveEntityStatus(String message) {
         if (message != null && message.toLowerCase().contains("registrado")) {
             return HttpStatus.CONFLICT;
         }

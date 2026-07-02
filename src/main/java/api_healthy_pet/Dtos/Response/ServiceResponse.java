@@ -1,4 +1,11 @@
 package api_healthy_pet.Dtos.Response;
 
-public record ServiceResponse(Long idService, String name, String description, Integer price) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record ServiceResponse(
+        @JsonProperty("idService") Long idService,
+        String name,
+        String description,
+        Integer price
+) {
 }
