@@ -39,7 +39,11 @@ public class AppointmentService {
 
         appointmentMapper.updateEntityFromRequest(request, appointment);
 
-        return appointmentMapper.toResponse(appointmentRepository.save(appointment));
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+
+        return appointmentRepository.findById(updatedAppointment.getIdAppointment())
+                .map(appointmentMapper::toResponse)
+                .orElseThrow(() -> new AppointmentException("Cita no encontrada"));
     }
 
     public void deleteById (Long idAppointment) {

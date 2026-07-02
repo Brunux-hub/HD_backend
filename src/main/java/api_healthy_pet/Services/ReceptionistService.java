@@ -39,7 +39,11 @@ public class ReceptionistService {
 
         receptionistMapper.updateEntityFromRequest(request, receptionist);
 
-        return receptionistMapper.toResponse(receptionistRepository.save(receptionist));
+        Receptionist updatedReceptionist = receptionistRepository.save(receptionist);
+
+        return receptionistRepository.findById(updatedReceptionist.getIdReceptionist())
+                .map(receptionistMapper::toResponse)
+                .orElseThrow(() -> new ReceptionistException("Receptionista no encontrado"));
     }
 
     public void deleteById (Long idReceptionist) {
