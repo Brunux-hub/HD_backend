@@ -45,7 +45,11 @@ public class VeterinarianService {
 
         veterinarianMapper.updateEntityFromRequest(request, veterinarian);
 
-        return veterinarianMapper.toResponse(veterinarianRepository.save(veterinarian));
+        Veterinarian updatedVeterinarian = veterinarianRepository.save(veterinarian);
+
+        return veterinarianRepository.findById(updatedVeterinarian.getIdVeterinarian())
+                .map(veterinarianMapper::toResponse)
+                .orElseThrow(() -> new VeterinarianException("Veterinario no encontrado"));
     }
 
     public void deleteById (Long idVeterinarian) {

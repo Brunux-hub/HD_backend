@@ -1,8 +1,11 @@
 package api_healthy_pet.Dtos.Response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import api_healthy_pet.Enums.UserType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-public record UserResponse(Long idUser, String username, UserType type) {
+public record UserResponse(
+        @JsonProperty("idUser") Long idUser,
+        String username,
+        UserType type
+) {
 }
