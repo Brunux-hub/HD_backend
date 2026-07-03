@@ -16,4 +16,7 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist, Long
     @Override
     @EntityGraph(attributePaths = "user")
     Optional<Receptionist> findById(Long idReceptionist);
+
+    // ¿El usuario logueado tiene ficha de recepcionista?
+    boolean existsByUser_Username(String username);
 }

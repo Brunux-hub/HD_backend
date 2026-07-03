@@ -23,6 +23,9 @@ public class Owner {
     @JoinColumn(name = "id_user")
     private User user;
 
+    @Column(unique = true)
+    private String dni;
+
     private String names;
     private String lastNames;
     private String email;

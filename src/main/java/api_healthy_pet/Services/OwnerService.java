@@ -22,9 +22,20 @@ public class OwnerService {
 
     private final OwnerMapper ownerMapper;
     private final OwnerRepository ownerRepository;
+    private final AccessControlService accessControlService;
 
+    // Alta de cliente desde el staff: solo recepcionista, y sin DNI duplicado.
     public OwnerResponse create (OwnerRequest request){
+        accessControlService.requireReceptionist();
+        if (ownerRepository.existsByDni(request.dni())) {
+            throw new OwnerException("Ya existe un cliente registrado con ese DNI");
+        }
         return ownerMapper.toResponse(ownerRepository.save(ownerMapper.toEntity(request)));
+    }
+
+    // Búsqueda por DNI (para verificar antes de crear).
+    public Optional<OwnerResponse> findByDni(String dni){
+        return ownerRepository.findByDni(dni).map(ownerMapper::toResponse);
     }
 
     public OwnerResponse findById (Long idOwner){

@@ -1,9 +1,17 @@
 package api_healthy_pet.Dtos.Response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 
 import java.time.LocalDate;
 
-public record VaccinationResponse(Long idVaccination, MedicalHistoryResponse medicalHistory, VaccineResponse vaccine, LocalDate applicationDate, LocalDate nextApplicationDate, String observation) {
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public record VaccinationResponse(
+        Long idVaccination,
+        MedicalHistoryResponse medicalHistory,
+        VaccineResponse vaccine,
+        LocalDate applicationDate,
+        LocalDate nextApplicationDate,
+        String observation
+) {
 }

@@ -2,7 +2,6 @@ package api_healthy_pet.Configuration;
 
 import api_healthy_pet.Services.CustomUserDetailsService;
 import api_healthy_pet.Services.JwtService;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (JwtException | IllegalArgumentException ignored) {
+        } catch (Exception ignored) {
+            // Token inválido, expirado o de un usuario inexistente: seguimos como
+            // NO autenticado (no rompemos endpoints públicos ni devolvemos 500).
             SecurityContextHolder.clearContext();
         }
 

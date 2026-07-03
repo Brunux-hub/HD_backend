@@ -27,4 +27,7 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long
             "(SELECT a.veterinarian.idVeterinarian FROM Appointment a WHERE a.date = :date)")
     List<Veterinarian> findAvailableVeterinarians(@Param("date") LocalDateTime date);
 
+    // ¿El usuario logueado tiene ficha de veterinario?
+    boolean existsByUser_Username(String username);
+
 }
