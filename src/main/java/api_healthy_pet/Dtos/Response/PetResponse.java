@@ -14,7 +14,6 @@ public record PetResponse(
         String species,
         String race,
         Date birthdate,
-        PetGender petGender,
-        String weight
+        PetGender petGender
 ) {
 }

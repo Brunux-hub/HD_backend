@@ -1,14 +1,13 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.OwnerRequest;
 import api_healthy_pet.Dtos.Request.PetRequest;
-import api_healthy_pet.Dtos.Response.OwnerResponse;
 import api_healthy_pet.Dtos.Response.PetResponse;
 import api_healthy_pet.Services.PetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +20,7 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping
+    @PreAuthorize("hasRole('RECEPTIONIST') or hasRole('ADMIN')")
     public ResponseEntity<PetResponse> createOwner(@Valid @RequestBody PetRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -37,11 +37,13 @@ public class PetController {
     }
 
     @PutMapping("/{idPet}")
+    @PreAuthorize("hasRole('RECEPTIONIST') or hasRole('ADMIN')")
     public ResponseEntity<PetResponse> updateOwnerById(@PathVariable Long idPet, @Valid @RequestBody PetRequest request){
         return ResponseEntity.ok().body(petService.updateById(idPet, request));
     }
 
     @DeleteMapping("/{idPet}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteOwnerById(@PathVariable Long idPet){
         petService.deleteById(idPet);
         return ResponseEntity.noContent().build();

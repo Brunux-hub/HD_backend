@@ -16,7 +16,6 @@ public record PetRequest(
         @NotBlank String species,
         @NotBlank String race,
         @NotNull Date birthdate,
-        @NotNull PetGender sex,
-        @NotBlank String weight
+        @NotNull PetGender sex
 ) {
 }

@@ -37,6 +37,4 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PetGender sex;
-
-    private String weight;
 }

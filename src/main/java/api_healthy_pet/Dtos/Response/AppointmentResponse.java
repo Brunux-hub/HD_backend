@@ -13,7 +13,6 @@ public record AppointmentResponse(
         PetResponse pet,
         VeterinarianResponse veterinarian,
         LocalDateTime date,
-        Integer timeMinutes,
         String reason,
         String notes,
         AppointmentStatus status

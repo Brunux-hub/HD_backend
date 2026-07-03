@@ -26,8 +26,12 @@ public class MedicalHistory {
     @JoinColumn(name = "id_service")
     private Services services;
 
-    private String description;
-
     private LocalDateTime date;
+
+    private String weight;
+
+    private String diagnosis;
+
+    private String treatment;
 
 }

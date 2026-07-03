@@ -10,7 +10,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring", uses = {ReceptionistMapper.class, PetMapper.class, VeterinarianMapper.class})
 public interface AppointmentMapper {
 
-    @Mapping(target = "receptionist.idReceptionist", source = "idReceptionist")
     @Mapping(target = "pet.idPet", source = "idPet")
     @Mapping(target = "veterinarian.idVeterinarian", source = "idVeterinarian")
     Appointment toEntity (AppointmentRequest request);

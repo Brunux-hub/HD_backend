@@ -50,27 +50,33 @@ public class AuthService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        return new AuthResponse(jwtService.generateToken(userDetails));
+        // Extrae el rol de la autoridad ROLE_XXX
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(a -> a.getAuthority().replace("ROLE_", ""))
+                .orElse("CLIENT");
+
+        String token = jwtService.generateToken(userDetails, role);
+
+        return new AuthResponse(token, role, userDetails.getUsername());
     }
 
-    // Rol "fino" del usuario logueado. El tipo del User ya distingue ADMIN / WORKER / CLIENT.
-    // Un CLIENT es quien se registró por el formulario público (tiene su Owner).
-    // Dentro de WORKER, veterinario/recepcionista se deducen por la ficha asociada.
+    // Rol del usuario logueado. El User.type es ahora el rol exacto.
+    // WORKER se mantiene solo para compatibilidad con datos existentes.
     public MeResponse me(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserException("Usuario no encontrado"));
 
-        String role;
-        if (user.getType() == UserType.ADMIN) {
-            role = "ADMIN";
-        } else if (user.getType() == UserType.CLIENT || ownerRepository.existsByUser_Username(username)) {
-            role = "CLIENT";
-        } else if (veterinarianRepository.existsByUser_Username(username)) {
-            role = "VETERINARIAN";
-        } else if (receptionistRepository.existsByUser_Username(username)) {
-            role = "RECEPTIONIST";
-        } else {
-            role = "WORKER";
+        String role = user.getType().name();
+
+        // Backward compat: si el usuario aún tiene type=WORKER, se deduce
+        // el rol real según su ficha (veterinario o recepcionista).
+        if ("WORKER".equals(role)) {
+            if (veterinarianRepository.existsByUser_Username(username)) {
+                role = "VETERINARIAN";
+            } else if (receptionistRepository.existsByUser_Username(username)) {
+                role = "RECEPTIONIST";
+            }
         }
 
         return new MeResponse(username, role);

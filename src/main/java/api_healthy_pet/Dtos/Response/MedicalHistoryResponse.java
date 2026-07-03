@@ -10,7 +10,9 @@ public record MedicalHistoryResponse(
         Long idMedicalHistory,
         AppointmentResponse appointment,
         ServiceResponse services,
-        String description,
-        LocalDateTime date
+        LocalDateTime date,
+        String weight,
+        String diagnosis,
+        String treatment
 ) {
 }

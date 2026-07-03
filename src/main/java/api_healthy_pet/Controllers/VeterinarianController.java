@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class VeterinarianController {
     private final VeterinarianService veterinarianService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VeterinarianResponse> createVeterinarian(@Valid @RequestBody VeterinarianRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -41,11 +43,13 @@ public class VeterinarianController {
     }
 
     @PutMapping("/{idVeterinarian}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VeterinarianResponse> updateVeterinarian(@PathVariable Long idVeterinarian, @Valid @RequestBody VeterinarianRequest request){
         return ResponseEntity.ok().body(veterinarianService.updateById(idVeterinarian, request));
     }
 
     @DeleteMapping("/{idVeterinarian}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteVeterinarianById(@PathVariable Long idVeterinarian){
         veterinarianService.deleteById(idVeterinarian);
         return ResponseEntity.noContent().build();

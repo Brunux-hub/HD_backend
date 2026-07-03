@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,15 +36,12 @@ public class Appointment {
 
     private LocalDateTime date;
 
-    @Column(name = "time_minutes")
-    private Integer timeMinutes;
-
     private String reason;
 
     private String notes;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private AppointmentStatus status;
+    private AppointmentStatus status = AppointmentStatus.OPENED;
 
 }

@@ -19,4 +19,6 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist, Long
 
     // ¿El usuario logueado tiene ficha de recepcionista?
     boolean existsByUser_Username(String username);
+
+    Optional<Receptionist> findByUser_Username(String username);
 }
