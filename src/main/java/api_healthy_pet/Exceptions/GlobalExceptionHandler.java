@@ -27,6 +27,11 @@ public class GlobalExceptionHandler {
         return buildResponse(status, ex.getMessage());
     }
 
+    @ExceptionHandler(OwnerException.class)
+    public ResponseEntity<ErrorResponse> handleOwnerException(OwnerException ex) {
+        return buildResponse(resolveEntityStatus(ex.getMessage()), ex.getMessage());
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");

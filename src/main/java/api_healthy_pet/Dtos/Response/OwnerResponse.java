@@ -1,13 +1,16 @@
 package api_healthy_pet.Dtos.Response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record OwnerResponse(
-        @JsonProperty("idOwner") Long idOwner,
+        Long idOwner,
+        String dni,
         String names,
-        @JsonProperty("lastNames") String lastNames,
+        String lastNames,
         String email,
-        @JsonProperty("phoneNumber") String phoneNumber,
+        String phoneNumber,
         String address
 ) {
 }

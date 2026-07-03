@@ -8,6 +8,7 @@ import api_healthy_pet.Mappers.MedicalHistoryMapper;
 import api_healthy_pet.Repositories.MedicalHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,12 +23,17 @@ public class MedicalHistoryService {
         return medicalHistoryMapper.toResponse(medicalHistoryRepository.save(medicalHistoryMapper.toEntity(request)));
     }
 
+    // Lectura transaccional: mantiene la sesión abierta mientras el mapper resuelve
+    // las relaciones LAZY (appointment, services), evitando el error "no session"
+    // por tener open-in-view=false.
+    @Transactional(readOnly = true)
     public MedicalHistoryResponse findById (Long idMedicalHistory){
         return medicalHistoryRepository.findById(idMedicalHistory)
                 .map(medicalHistoryMapper::toResponse)
                 .orElseThrow(() -> new MedicalHistoryException("Historial medico no encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public List<MedicalHistoryResponse> findAll(){
         return medicalHistoryRepository.findAll()
                 .stream().map(medicalHistoryMapper::toResponse).toList();

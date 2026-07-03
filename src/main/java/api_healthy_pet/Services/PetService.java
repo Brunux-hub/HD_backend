@@ -17,8 +17,10 @@ public class PetService {
 
     private final PetMapper petMapper;
     private final PetRepository petRepository;
+    private final AccessControlService accessControlService;
 
     public PetResponse create (PetRequest request){
+        accessControlService.requireReceptionist();
         return petMapper.toResponse(petRepository.save(petMapper.toEntity(request)));
     }
 

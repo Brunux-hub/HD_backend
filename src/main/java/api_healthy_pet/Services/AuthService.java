@@ -4,6 +4,7 @@ import api_healthy_pet.Dtos.Request.ClientRegisterRequest;
 import api_healthy_pet.Dtos.Request.LoginRequest;
 import api_healthy_pet.Dtos.Request.RegisterRequest;
 import api_healthy_pet.Dtos.Response.AuthResponse;
+import api_healthy_pet.Dtos.Response.MeResponse;
 import api_healthy_pet.Dtos.Response.OwnerResponse;
 import api_healthy_pet.Dtos.Response.UserResponse;
 import api_healthy_pet.Entities.Owner;
@@ -13,7 +14,9 @@ import api_healthy_pet.Exceptions.UserException;
 import api_healthy_pet.Mappers.OwnerMapper;
 import api_healthy_pet.Mappers.UserMapper;
 import api_healthy_pet.Repositories.OwnerRepository;
+import api_healthy_pet.Repositories.ReceptionistRepository;
 import api_healthy_pet.Repositories.UserRepository;
+import api_healthy_pet.Repositories.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +38,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final OwnerRepository ownerRepository;
     private final OwnerMapper ownerMapper;
+    private final VeterinarianRepository veterinarianRepository;
+    private final ReceptionistRepository receptionistRepository;
 
     public AuthResponse login(LoginRequest request) {
         // authenticate() ya carga el usuario y valida la contraseña; reutilizamos
@@ -46,6 +51,28 @@ public class AuthService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         return new AuthResponse(jwtService.generateToken(userDetails));
+    }
+
+    // Rol "fino" del usuario logueado. El JWT solo distingue ADMIN/WORKER, así que
+    // veterinario/recepcionista/cliente se deducen por la ficha que tengan asociada.
+    public MeResponse me(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserException("Usuario no encontrado"));
+
+        String role;
+        if (user.getType() == UserType.ADMIN) {
+            role = "ADMIN";
+        } else if (ownerRepository.existsByUser_Username(username)) {
+            role = "CLIENT";
+        } else if (veterinarianRepository.existsByUser_Username(username)) {
+            role = "VETERINARIAN";
+        } else if (receptionistRepository.existsByUser_Username(username)) {
+            role = "RECEPTIONIST";
+        } else {
+            role = "WORKER";
+        }
+
+        return new MeResponse(username, role);
     }
 
     // Alta de usuario (username/password/type) — uso administrativo.
@@ -69,6 +96,9 @@ public class AuthService {
         if (userRepository.existsByUsername(request.username())) {
             throw new UserException("El username ya está registrado");
         }
+        if (ownerRepository.existsByDni(request.dni())) {
+            throw new UserException("Ya existe un cliente registrado con ese DNI");
+        }
 
         User user = new User();
         user.setUsername(request.username());
@@ -78,6 +108,7 @@ public class AuthService {
 
         Owner owner = new Owner();
         owner.setUser(user);
+        owner.setDni(request.dni());
         owner.setNames(request.names());
         owner.setLastNames(request.lastNames());
         owner.setEmail(request.email());

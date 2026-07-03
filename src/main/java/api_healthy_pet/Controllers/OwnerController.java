@@ -36,6 +36,14 @@ public class OwnerController {
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
+    // Buscar cliente por DNI (para verificar antes de crear). 200 + Owner, o 204 si no existe.
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<OwnerResponse> getOwnerByDni(@PathVariable String dni){
+        return ownerService.findByDni(dni)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
     @GetMapping("/{idOwner}")
     public ResponseEntity<OwnerResponse> getOwnerByID(@PathVariable Long idOwner){
         return ResponseEntity.ok().body(ownerService.findById(idOwner));

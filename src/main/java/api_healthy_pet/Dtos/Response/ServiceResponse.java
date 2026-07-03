@@ -1,9 +1,11 @@
 package api_healthy_pet.Dtos.Response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record ServiceResponse(
-        @JsonProperty("idService") Long idService,
+        Long idService,
         String name,
         String description,
         Integer price

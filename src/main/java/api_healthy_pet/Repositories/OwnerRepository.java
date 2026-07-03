@@ -9,4 +9,12 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     // Busca el Owner (cliente) asociado a un usuario por su username.
     Optional<Owner> findByUser_Username(String username);
+
+    // ¿El usuario logueado tiene ficha de cliente?
+    boolean existsByUser_Username(String username);
+
+    // Búsqueda / deduplicación por DNI.
+    Optional<Owner> findByDni(String dni);
+
+    boolean existsByDni(String dni);
 }
