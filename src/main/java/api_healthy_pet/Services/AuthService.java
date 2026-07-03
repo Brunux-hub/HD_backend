@@ -53,8 +53,9 @@ public class AuthService {
         return new AuthResponse(jwtService.generateToken(userDetails));
     }
 
-    // Rol "fino" del usuario logueado. El JWT solo distingue ADMIN/WORKER, así que
-    // veterinario/recepcionista/cliente se deducen por la ficha que tengan asociada.
+    // Rol "fino" del usuario logueado. El tipo del User ya distingue ADMIN / WORKER / CLIENT.
+    // Un CLIENT es quien se registró por el formulario público (tiene su Owner).
+    // Dentro de WORKER, veterinario/recepcionista se deducen por la ficha asociada.
     public MeResponse me(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserException("Usuario no encontrado"));
@@ -62,7 +63,7 @@ public class AuthService {
         String role;
         if (user.getType() == UserType.ADMIN) {
             role = "ADMIN";
-        } else if (ownerRepository.existsByUser_Username(username)) {
+        } else if (user.getType() == UserType.CLIENT || ownerRepository.existsByUser_Username(username)) {
             role = "CLIENT";
         } else if (veterinarianRepository.existsByUser_Username(username)) {
             role = "VETERINARIAN";
@@ -103,7 +104,7 @@ public class AuthService {
         User user = new User();
         user.setUsername(request.username());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setType(UserType.WORKER);
+        user.setType(UserType.CLIENT);
         userRepository.save(user);
 
         Owner owner = new Owner();
