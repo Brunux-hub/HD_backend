@@ -14,41 +14,41 @@ import java.util.Optional;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     @Override
     @EntityGraph(attributePaths = {
-            "receptionist", "receptionist.user",
-            "pet", "pet.owner",
-            "veterinarian", "veterinarian.user"
+            "receptionista", "receptionista.user",
+            "pet", "pet.cliente",
+            "veterinario", "veterinario.user"
     })
     List<Appointment> findAll();
 
     @Override
     @EntityGraph(attributePaths = {
-            "receptionist", "receptionist.user",
-            "pet", "pet.owner",
-            "veterinarian", "veterinarian.user"
+            "receptionista", "receptionista.user",
+            "pet", "pet.cliente",
+            "veterinario", "veterinario.user"
     })
     Optional<Appointment> findById(Long idAppointment);
 
     // SELECT * FROM appointments WHERE date >= ?;
     @EntityGraph(attributePaths = {
-            "receptionist", "receptionist.user",
-            "pet", "pet.owner",
-            "veterinarian", "veterinarian.user"
+            "receptionista", "receptionista.user",
+            "pet", "pet.cliente",
+            "veterinario", "veterinario.user"
     })
     List<Appointment> findByDateGreaterThanEqual(LocalDateTime date);
 
     // SELECT * FROM appointments WHERE status = ?; (OPENED, CLOSED, CANCELED, RESCHEDULED)
     @EntityGraph(attributePaths = {
-            "receptionist", "receptionist.user",
-            "pet", "pet.owner",
-            "veterinarian", "veterinarian.user"
+            "receptionista", "receptionista.user",
+            "pet", "pet.cliente",
+            "veterinario", "veterinario.user"
     })
     List<Appointment> findByStatus(AppointmentStatus status);
 
     // SELECT * FROM appointments WHERE status = ? AND date >= ?;
     @EntityGraph(attributePaths = {
-            "receptionist", "receptionist.user",
-            "pet", "pet.owner",
-            "veterinarian", "veterinarian.user"
+            "receptionista", "receptionista.user",
+            "pet", "pet.cliente",
+            "veterinario", "veterinario.user"
     })
     List<Appointment> findByStatusAndDateGreaterThanEqual(AppointmentStatus status, LocalDateTime date);
 }

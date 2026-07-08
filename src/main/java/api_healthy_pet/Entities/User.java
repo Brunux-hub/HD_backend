@@ -1,12 +1,11 @@
 package api_healthy_pet.Entities;
 
-import api_healthy_pet.Enums.UserType;
+import api_healthy_pet.Enums.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name="users")
@@ -17,18 +16,20 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    private Long idUser;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false)
-    private UserType type;
+    private Role role;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
 
 }

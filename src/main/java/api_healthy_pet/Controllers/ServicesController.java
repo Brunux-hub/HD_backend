@@ -22,28 +22,28 @@ public class ServicesController {
     private final ServicesService service;
 
     @PostMapping
-    public ResponseEntity<ServiceResponse> createOwner(@Valid @RequestBody ServiceRequest request){
+    public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(request));
     }
     @GetMapping("/{idService}")
-    public ResponseEntity<ServiceResponse> getOwnerByID(@PathVariable Long idService){
+    public ResponseEntity<ServiceResponse> getServiceById(@PathVariable Long idService){
         return ResponseEntity.ok().body(service.findById(idService));
     }
 
     @GetMapping
-    public ResponseEntity<List<ServiceResponse>> getAllOwners(){
+    public ResponseEntity<List<ServiceResponse>> getAllServices(){
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @PutMapping("/{idService}")
-    public ResponseEntity<ServiceResponse> updateOwnerById(@PathVariable Long idService, @Valid @RequestBody ServiceRequest request){
+    public ResponseEntity<ServiceResponse> updateServiceById(@PathVariable Long idService, @Valid @RequestBody ServiceRequest request){
         return ResponseEntity.ok().body(service.updateById(idService, request));
     }
 
     @DeleteMapping("/{idService}")
-    public ResponseEntity<Void> deleteOwnerById(@PathVariable Long idService){
+    public ResponseEntity<Void> deleteServiceById(@PathVariable Long idService){
         service.deleteById(idService);
         return ResponseEntity.noContent().build();
     }

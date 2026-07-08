@@ -9,7 +9,7 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record PetResponse(
         Long idPet,
-        OwnerResponse owner,
+        ClienteResponse cliente,
         String name,
         String species,
         String race,

@@ -27,8 +27,13 @@ public class GlobalExceptionHandler {
         return buildResponse(status, ex.getMessage());
     }
 
-    @ExceptionHandler(OwnerException.class)
-    public ResponseEntity<ErrorResponse> handleOwnerException(OwnerException ex) {
+    @ExceptionHandler(ClienteException.class)
+    public ResponseEntity<ErrorResponse> handleClienteException(ClienteException ex) {
+        return buildResponse(resolveEntityStatus(ex.getMessage()), ex.getMessage());
+    }
+
+    @ExceptionHandler(AdminException.class)
+    public ResponseEntity<ErrorResponse> handleAdminException(AdminException ex) {
         return buildResponse(resolveEntityStatus(ex.getMessage()), ex.getMessage());
     }
 

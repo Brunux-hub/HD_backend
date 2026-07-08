@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AppointmentResponse(
         Long idAppointment,
-        ReceptionistResponse receptionist,
+        RecepcionistaResponse recepcionista,
         PetResponse pet,
-        VeterinarianResponse veterinarian,
+        VeterinarioResponse veterinario,
         LocalDateTime date,
         Integer timeMinutes,
         String reason,

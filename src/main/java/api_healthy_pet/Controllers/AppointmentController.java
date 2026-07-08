@@ -19,28 +19,28 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @PostMapping
-    public ResponseEntity<AppointmentResponse> createOwner(@Valid @RequestBody AppointmentRequest request){
+    public ResponseEntity<AppointmentResponse> createAppointment(@Valid @RequestBody AppointmentRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(appointmentService.create(request));
     }
     @GetMapping("/{idAppointment}")
-    public ResponseEntity<AppointmentResponse> getOwnerByID(@PathVariable Long idAppointment){
+    public ResponseEntity<AppointmentResponse> getAppointmentById(@PathVariable Long idAppointment){
         return ResponseEntity.ok().body(appointmentService.findById(idAppointment));
     }
 
     @GetMapping
-    public ResponseEntity<List<AppointmentResponse>> getAllOwners(){
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointments(){
         return ResponseEntity.ok().body(appointmentService.findAll());
     }
 
     @PutMapping("/{idAppointment}")
-    public ResponseEntity<AppointmentResponse> updateOwnerById(@PathVariable Long idAppointment, @Valid @RequestBody AppointmentRequest request){
+    public ResponseEntity<AppointmentResponse> updateAppointmentById(@PathVariable Long idAppointment, @Valid @RequestBody AppointmentRequest request){
         return ResponseEntity.ok().body(appointmentService.updateById(idAppointment, request));
     }
 
     @DeleteMapping("/{idAppointment}")
-    public ResponseEntity<Void> deleteOwnerById(@PathVariable Long idAppointment){
+    public ResponseEntity<Void> deleteAppointmentById(@PathVariable Long idAppointment){
         appointmentService.deleteById(idAppointment);
         return ResponseEntity.noContent().build();
     }

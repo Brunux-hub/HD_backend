@@ -19,13 +19,13 @@ public class ReportsService {
     private final ServicesRepository servicesRepository;
     private final AppointmentRepository appointmentRepository;
     private final PetRepository petRepository;
-    private final VeterinarianRepository veterinarianRepository;
+    private final VeterinarioRepository veterinarianRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
     // Mappers
     private final ServiceMapper serviceMapper;
     private final AppointmentMapper appointmentMapper;
     private final PetMapper petMapper;
-    private final VeterinarianMapper veterinarianMapper;
+    private final VeterinarioMapper veterinarianMapper;
     private final MedicalHistoryMapper medicalHistoryMapper;
 
     //Filtrar Citas por Status

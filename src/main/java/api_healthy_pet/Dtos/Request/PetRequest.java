@@ -9,9 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 public record PetRequest(
-        @JsonProperty("idOwner")
-        @JsonAlias({"ownerId", "id_owner"})
-        @NotNull Long idOwner,
+        @JsonProperty("clienteId")
+        @JsonAlias({"cliente_id", "idCliente"})
+        @NotNull Long clienteId,
         @NotBlank String name,
         @NotBlank String species,
         @NotBlank String race,
