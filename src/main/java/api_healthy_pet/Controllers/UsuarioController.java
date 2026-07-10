@@ -1,11 +1,11 @@
 package api_healthy_pet.Controllers;
 
+import api_healthy_pet.DTOs.request.CambiarContraseniaRequest;
 import api_healthy_pet.DTOs.request.UsuarioRequest;
 import api_healthy_pet.DTOs.response.UsuarioResponse;
 import api_healthy_pet.Services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,38 +22,47 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponse>> findAll() {
         return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UsuarioResponse> create(@Valid @RequestBody UsuarioRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.create(request));
-    }
-
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponse> update(@PathVariable Long id, @Valid @RequestBody UsuarioRequest request) {
         return ResponseEntity.ok(usuarioService.update(id, request));
     }
 
+    @PatchMapping("/{id}/contrasenia")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable Long id,
+            @Valid @RequestBody CambiarContraseniaRequest request
+    ) {
+        usuarioService.changePassword(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/{id}/activar")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> activate(@PathVariable Long id) {
         usuarioService.activate(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/desactivar")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         usuarioService.deactivate(id);
         return ResponseEntity.noContent().build();
