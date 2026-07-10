@@ -1,18 +1,11 @@
 package api_healthy_pet.Mappers;
 
-import api_healthy_pet.Dtos.Request.VeterinarioRequest;
-import api_healthy_pet.Dtos.Response.VeterinarioResponse;
+import api_healthy_pet.DTOs.response.VeterinarioResponse;
 import api_healthy_pet.Entities.Veterinario;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UsuarioMapper.class)
 public interface VeterinarioMapper {
 
-    Veterinario toEntity (VeterinarioRequest request);
-
-    VeterinarioResponse toResponse (Veterinario veterinario);
-
-    void updateEntityFromRequest (VeterinarioRequest request, @MappingTarget Veterinario veterinario);
-
+    VeterinarioResponse toResponse(Veterinario veterinario);
 }

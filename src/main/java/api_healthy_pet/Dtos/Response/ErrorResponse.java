@@ -1,11 +1,19 @@
-package api_healthy_pet.Dtos.Response;
+package api_healthy_pet.DTOs.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
-public record ErrorResponse(
-        int status,
-        String error,
-        String message,
-        LocalDateTime timestamp
-) {
+@Getter
+@AllArgsConstructor
+public class ErrorResponse {
+
+    private LocalDateTime timestamp;
+    private int status;
+    private String error;
+    private String message;
+    private String path;
+    private Map<String, String> validationErrors;
 }

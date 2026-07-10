@@ -1,9 +1,26 @@
 spring:
   application:
-    name: api_healthy_pet
+    name: healthy-pets-api
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: healthy_pets_bd_2
+        format_sql: true
+        jdbc:
+          time_zone: UTC
 
-  jackson:
-    property-naming-strategy: SNAKE_CASE
+server:
+  error:
+    include-message: never
 
 jwt:
   secret: ${JWT_SECRET:Q2FtYmlhclBvclVuU2VjcmV0b1NlZ3Vyb0RlMzJCeXRlc01pbmltbw==}
@@ -11,4 +28,4 @@ jwt:
 
 app:
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://TU-FRONTEND.vercel.app}

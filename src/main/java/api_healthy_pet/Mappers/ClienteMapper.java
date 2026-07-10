@@ -1,17 +1,11 @@
 package api_healthy_pet.Mappers;
 
-import api_healthy_pet.Dtos.Request.ClienteRequest;
-import api_healthy_pet.Dtos.Response.ClienteResponse;
+import api_healthy_pet.DTOs.response.ClienteResponse;
 import api_healthy_pet.Entities.Cliente;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UsuarioMapper.class)
 public interface ClienteMapper {
 
-    Cliente toEntity (ClienteRequest request);
-
-    ClienteResponse toResponse (Cliente cliente);
-
-    void updateEntityFromRequest (ClienteRequest request, @MappingTarget Cliente cliente);
+    ClienteResponse toResponse(Cliente cliente);
 }

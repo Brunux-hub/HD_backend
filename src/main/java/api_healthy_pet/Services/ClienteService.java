@@ -1,57 +1,119 @@
 package api_healthy_pet.Services;
 
-import api_healthy_pet.Dtos.Request.ClienteRequest;
-import api_healthy_pet.Dtos.Response.ClienteResponse;
+import api_healthy_pet.DTOs.request.ClienteRequest;
+import api_healthy_pet.DTOs.response.ClienteResponse;
 import api_healthy_pet.Entities.Cliente;
-import api_healthy_pet.Exceptions.ClienteException;
+import api_healthy_pet.Entities.Usuario;
+import api_healthy_pet.Enums.RolUsuario;
+import api_healthy_pet.Exceptions.DuplicateResourceException;
+import api_healthy_pet.Exceptions.ForbiddenException;
+import api_healthy_pet.Exceptions.ResourceNotFoundException;
 import api_healthy_pet.Mappers.ClienteMapper;
 import api_healthy_pet.Repositories.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClienteService {
 
-    private final ClienteMapper clienteMapper;
     private final ClienteRepository clienteRepository;
+    private final ClienteMapper clienteMapper;
+    private final AccountServiceSupport accountServiceSupport;
+    private final CurrentUserService currentUserService;
 
-    public ClienteResponse create (ClienteRequest request){
-        return clienteMapper.toResponse(clienteRepository.save(clienteMapper.toEntity(request)));
-    }
-
-    public ClienteResponse findById (Long userId){
-        return clienteRepository.findById(userId)
+    public List<ClienteResponse> findAll() {
+        return clienteRepository.findAll().stream()
                 .map(clienteMapper::toResponse)
-                .orElseThrow(() -> new ClienteException("Cliente no encontrado"));
+                .toList();
     }
 
-    public List<ClienteResponse> findAll(){
-        return clienteRepository.findAll()
-                .stream().map(clienteMapper::toResponse).toList();
+    public ClienteResponse findById(Long idUsuario) {
+        Cliente cliente = getCliente(idUsuario);
+        validateClienteAccess(cliente.getIdUsuario());
+        return clienteMapper.toResponse(cliente);
     }
 
-    public Optional<ClienteResponse> findByEmail(String email){
-        return clienteRepository.findByUser_Email(email).map(clienteMapper::toResponse);
+    public ClienteResponse findMine() {
+        if (currentUserService.getCurrentRole() != RolUsuario.CLIENTE) {
+            throw new ForbiddenException("Solo un cliente autenticado puede consultar este endpoint");
+        }
+        return clienteMapper.toResponse(getCliente(currentUserService.getCurrentUserId()));
     }
 
-    public ClienteResponse updateById (Long userId, ClienteRequest request){
-        Cliente cliente = clienteRepository.findById(userId)
-                .orElseThrow(() -> new ClienteException("Cliente no encontrado"));
+    @Transactional
+    public ClienteResponse create(ClienteRequest request) {
+        validateDniForCreate(request.getDni());
+        Usuario usuario = accountServiceSupport.createUsuario(
+                request.getCorreo(),
+                request.getContrasenia(),
+                RolUsuario.CLIENTE,
+                request.getHabilitado()
+        );
 
-        clienteMapper.updateEntityFromRequest(request, cliente);
-
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(usuario);
+        cliente.setNombres(request.getNombres());
+        cliente.setApellidos(request.getApellidos());
+        cliente.setDni(request.getDni());
+        cliente.setTelefono(request.getTelefono());
+        cliente.setDireccion(request.getDireccion());
         return clienteMapper.toResponse(clienteRepository.save(cliente));
     }
 
-    public void deleteById (Long userId) {
-        if (!clienteRepository.existsById(userId)){
-            throw new ClienteException("Cliente no encontrado");
-        }
-        clienteRepository.deleteById(userId);
+    @Transactional
+    public ClienteResponse update(Long idUsuario, ClienteRequest request) {
+        Cliente cliente = getCliente(idUsuario);
+        validateClienteAccessForWrite(idUsuario);
+        validateDniForUpdate(request.getDni(), idUsuario);
+
+        accountServiceSupport.updateUsuario(
+                cliente.getUsuario(),
+                request.getCorreo(),
+                request.getContrasenia(),
+                request.getHabilitado()
+        );
+        cliente.setNombres(request.getNombres());
+        cliente.setApellidos(request.getApellidos());
+        cliente.setDni(request.getDni());
+        cliente.setTelefono(request.getTelefono());
+        cliente.setDireccion(request.getDireccion());
+        return clienteMapper.toResponse(clienteRepository.save(cliente));
     }
 
+    public Cliente getCliente(Long idUsuario) {
+        return clienteRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
+    }
+
+    private void validateDniForCreate(String dni) {
+        if (StringUtils.hasText(dni) && clienteRepository.existsByDni(dni)) {
+            throw new DuplicateResourceException("Ya existe un cliente con ese DNI");
+        }
+    }
+
+    private void validateDniForUpdate(String dni, Long idUsuario) {
+        if (StringUtils.hasText(dni) && clienteRepository.existsByDniAndIdUsuarioNot(dni, idUsuario)) {
+            throw new DuplicateResourceException("Ya existe un cliente con ese DNI");
+        }
+    }
+
+    private void validateClienteAccess(Long idUsuarioObjetivo) {
+        if (currentUserService.getCurrentRole() == RolUsuario.CLIENTE
+                && !currentUserService.isCurrentUser(idUsuarioObjetivo)) {
+            throw new ForbiddenException("No puede acceder a datos de otro cliente");
+        }
+    }
+
+    private void validateClienteAccessForWrite(Long idUsuarioObjetivo) {
+        RolUsuario rol = currentUserService.getCurrentRole();
+        if (rol == RolUsuario.CLIENTE && !currentUserService.isCurrentUser(idUsuarioObjetivo)) {
+            throw new ForbiddenException("No puede modificar datos de otro cliente");
+        }
+    }
 }

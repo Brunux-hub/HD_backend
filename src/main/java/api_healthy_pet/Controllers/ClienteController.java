@@ -1,57 +1,57 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.ClienteRequest;
-import api_healthy_pet.Dtos.Response.ClienteResponse;
+import api_healthy_pet.DTOs.request.ClienteRequest;
+import api_healthy_pet.DTOs.response.ClienteResponse;
 import api_healthy_pet.Services.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/api/v1/clientes")
 @RequiredArgsConstructor
 public class ClienteController {
 
     private final ClienteService clienteService;
 
-    @PostMapping
-    public ResponseEntity<ClienteResponse> createCliente(@Valid @RequestBody ClienteRequest request){
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(clienteService.create(request));
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    public ResponseEntity<List<ClienteResponse>> findAll() {
+        return ResponseEntity.ok(clienteService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','CLIENTE')")
+    public ResponseEntity<ClienteResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(clienteService.findById(id));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ClienteResponse> getMyCliente(Principal principal){
-        return clienteService.findByEmail(principal.getName())
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.noContent().build());
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ClienteResponse> findMine() {
+        return ResponseEntity.ok(clienteService.findMine());
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ClienteResponse> getClienteById(@PathVariable Long userId){
-        return ResponseEntity.ok().body(clienteService.findById(userId));
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    public ResponseEntity<ClienteResponse> create(@Valid @RequestBody ClienteRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.create(request));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ClienteResponse>> getAllClientes(){
-        return ResponseEntity.ok().body(clienteService.findAll());
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','CLIENTE')")
+    public ResponseEntity<ClienteResponse> update(@PathVariable Long id, @Valid @RequestBody ClienteRequest request) {
+        return ResponseEntity.ok(clienteService.update(id, request));
     }
-
-    @PutMapping("/{userId}")
-    public ResponseEntity<ClienteResponse> updateClienteById(@PathVariable Long userId, @Valid @RequestBody ClienteRequest request){
-        return ResponseEntity.ok().body(clienteService.updateById(userId, request));
-    }
-
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteClienteById(@PathVariable Long userId){
-        clienteService.deleteById(userId);
-        return ResponseEntity.noContent().build();
-    }
-
 }

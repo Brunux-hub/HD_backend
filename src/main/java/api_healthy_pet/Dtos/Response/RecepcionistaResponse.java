@@ -1,14 +1,17 @@
-package api_healthy_pet.Dtos.Response;
+package api_healthy_pet.DTOs.response;
 
-import tools.jackson.databind.PropertyNamingStrategies;
-import tools.jackson.databind.annotation.JsonNaming;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record RecepcionistaResponse(
-        Long userId,
-        UserResponse user,
-        String nombre,
-        String apellido,
-        String telefono
-) {
+@Getter
+@Setter
+@NoArgsConstructor
+public class RecepcionistaResponse {
+
+    private Long idUsuario;
+    private String nombres;
+    private String apellidos;
+    private String telefono;
+    private UsuarioResponse usuario;
 }

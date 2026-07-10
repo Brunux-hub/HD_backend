@@ -1,54 +1,54 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.VeterinarioRequest;
-import api_healthy_pet.Dtos.Response.VeterinarioResponse;
+import api_healthy_pet.DTOs.request.VeterinarioRequest;
+import api_healthy_pet.DTOs.response.VeterinarioResponse;
 import api_healthy_pet.Services.VeterinarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/veterinarios")
+@RequestMapping("/api/v1/veterinarios")
 @RequiredArgsConstructor
 public class VeterinarioController {
 
     private final VeterinarioService veterinarioService;
 
-    @PostMapping
-    public ResponseEntity<VeterinarioResponse> createVeterinario(@Valid @RequestBody VeterinarioRequest request){
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(veterinarioService.create(request));
-    }
-    @GetMapping("/{userId}")
-    public ResponseEntity<VeterinarioResponse> getVeterinarioById(@PathVariable Long userId){
-        return ResponseEntity.ok().body(veterinarioService.findById(userId));
-    }
-
     @GetMapping
-    public ResponseEntity<List<VeterinarioResponse>> getAllVeterinarios(){
-        return ResponseEntity.ok().body(veterinarioService.findAll());
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    public ResponseEntity<List<VeterinarioResponse>> findAll() {
+        return ResponseEntity.ok(veterinarioService.findAll());
     }
 
-    @GetMapping("/available")
-    public ResponseEntity<List<VeterinarioResponse>> getAllAvailableVeterinarios (@RequestParam LocalDateTime date){
-        return ResponseEntity.ok().body(veterinarioService.findAllAvailable(date));
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    public ResponseEntity<VeterinarioResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(veterinarioService.findById(id));
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<VeterinarioResponse> updateVeterinario(@PathVariable Long userId, @Valid @RequestBody VeterinarioRequest request){
-        return ResponseEntity.ok().body(veterinarioService.updateById(userId, request));
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VeterinarioResponse> create(@Valid @RequestBody VeterinarioRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(veterinarioService.create(request));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteVeterinarioById(@PathVariable Long userId){
-        veterinarioService.deleteById(userId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VeterinarioResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody VeterinarioRequest request
+    ) {
+        return ResponseEntity.ok(veterinarioService.update(id, request));
     }
-
 }

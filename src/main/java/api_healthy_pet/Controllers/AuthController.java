@@ -1,18 +1,18 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.LoginRequest;
-import api_healthy_pet.Dtos.Response.AuthResponse;
-import api_healthy_pet.Dtos.Response.MeResponse;
+import api_healthy_pet.DTOs.request.LoginRequest;
+import api_healthy_pet.DTOs.response.AuthResponse;
 import api_healthy_pet.Services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -21,10 +21,5 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<MeResponse> me(Principal principal) {
-        return ResponseEntity.ok(authService.me(principal.getName()));
     }
 }

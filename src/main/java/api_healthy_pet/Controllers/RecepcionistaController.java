@@ -1,48 +1,51 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.RecepcionistaRequest;
-import api_healthy_pet.Dtos.Response.RecepcionistaResponse;
+import api_healthy_pet.DTOs.request.RecepcionistaRequest;
+import api_healthy_pet.DTOs.response.RecepcionistaResponse;
 import api_healthy_pet.Services.RecepcionistaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/recepcionistas")
+@RequestMapping("/api/v1/recepcionistas")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class RecepcionistaController {
 
     private final RecepcionistaService recepcionistaService;
 
-    @PostMapping
-    public ResponseEntity<RecepcionistaResponse> createRecepcionista(@Valid @RequestBody RecepcionistaRequest request){
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(recepcionistaService.create(request));
-    }
-    @GetMapping("/{userId}")
-    public ResponseEntity<RecepcionistaResponse> getRecepcionistaById(@PathVariable Long userId){
-        return ResponseEntity.ok().body(recepcionistaService.findById(userId));
-    }
-
     @GetMapping
-    public ResponseEntity<List<RecepcionistaResponse>> getAllRecepcionistas(){
-        return ResponseEntity.ok().body(recepcionistaService.findAll());
+    public ResponseEntity<List<RecepcionistaResponse>> findAll() {
+        return ResponseEntity.ok(recepcionistaService.findAll());
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<RecepcionistaResponse> updateRecepcionistaById(@PathVariable Long userId, @Valid @RequestBody RecepcionistaRequest request){
-        return ResponseEntity.ok().body(recepcionistaService.updateById(userId, request));
+    @GetMapping("/{id}")
+    public ResponseEntity<RecepcionistaResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(recepcionistaService.findById(id));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteRecepcionistaById(@PathVariable Long userId){
-        recepcionistaService.deleteById(userId);
-        return ResponseEntity.noContent().build();
+    @PostMapping
+    public ResponseEntity<RecepcionistaResponse> create(@Valid @RequestBody RecepcionistaRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(recepcionistaService.create(request));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<RecepcionistaResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody RecepcionistaRequest request
+    ) {
+        return ResponseEntity.ok(recepcionistaService.update(id, request));
+    }
 }

@@ -1,4 +1,20 @@
-package api_healthy_pet.Dtos.Response;
+package api_healthy_pet.DTOs.response;
 
-public record AuthResponse(String token) {
+import api_healthy_pet.Enums.RolUsuario;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class AuthResponse {
+
+    private String token;
+    private Long idUsuario;
+    private String correo;
+    private RolUsuario rol;
+    private Boolean habilitado;
+    private String nombres;
+    private String apellidos;
 }
