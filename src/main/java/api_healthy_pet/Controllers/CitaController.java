@@ -4,6 +4,7 @@ import api_healthy_pet.DTOs.request.CitaEstadoRequest;
 import api_healthy_pet.DTOs.request.CitaRequest;
 import api_healthy_pet.DTOs.response.CitaResponse;
 import api_healthy_pet.Services.CitaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Citas")
 public class CitaController {
 
     private final CitaService citaService;

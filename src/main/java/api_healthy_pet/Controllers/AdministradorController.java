@@ -3,6 +3,7 @@ package api_healthy_pet.Controllers;
 import api_healthy_pet.DTOs.request.AdministradorRequest;
 import api_healthy_pet.DTOs.response.AdministradorResponse;
 import api_healthy_pet.Services.AdministradorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/administradores")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Administradores")
 public class AdministradorController {
 
     private final AdministradorService administradorService;

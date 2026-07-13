@@ -4,6 +4,7 @@ import api_healthy_pet.DTOs.request.CambiarContraseniaRequest;
 import api_healthy_pet.DTOs.request.UsuarioRequest;
 import api_healthy_pet.DTOs.response.UsuarioResponse;
 import api_healthy_pet.Services.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
+@Tag(name = "Usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

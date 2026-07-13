@@ -3,6 +3,7 @@ package api_healthy_pet.Controllers;
 import api_healthy_pet.DTOs.request.MascotaRequest;
 import api_healthy_pet.DTOs.response.MascotaResponse;
 import api_healthy_pet.Services.MascotaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Mascotas")
 public class MascotaController {
 
     private final MascotaService mascotaService;

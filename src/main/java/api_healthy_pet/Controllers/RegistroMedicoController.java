@@ -3,6 +3,7 @@ package api_healthy_pet.Controllers;
 import api_healthy_pet.DTOs.request.RegistroMedicoRequest;
 import api_healthy_pet.DTOs.response.RegistroMedicoResponse;
 import api_healthy_pet.Services.RegistroMedicoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Registros Medicos")
 public class RegistroMedicoController {
 
     private final RegistroMedicoService registroMedicoService;

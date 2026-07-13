@@ -3,6 +3,7 @@ package api_healthy_pet.Controllers;
 import api_healthy_pet.DTOs.request.RecepcionistaRequest;
 import api_healthy_pet.DTOs.response.RecepcionistaResponse;
 import api_healthy_pet.Services.RecepcionistaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/recepcionistas")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Recepcionistas")
 public class RecepcionistaController {
 
     private final RecepcionistaService recepcionistaService;
