@@ -39,6 +39,12 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.findById(id));
     }
 
+    @GetMapping("/dni/{dni}")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    public ResponseEntity<ClienteResponse> findByDni(@PathVariable String dni) {
+        return ResponseEntity.ok(clienteService.findByDni(dni));
+    }
+
     @GetMapping("/me")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ClienteResponse> findMine() {

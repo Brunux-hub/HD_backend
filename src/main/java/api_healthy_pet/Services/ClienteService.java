@@ -39,6 +39,13 @@ public class ClienteService {
         return clienteMapper.toResponse(cliente);
     }
 
+    public ClienteResponse findByDni(String dni) {
+        Cliente cliente = clienteRepository.findByDni(dni)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
+        validateClienteAccess(cliente.getIdUsuario());
+        return clienteMapper.toResponse(cliente);
+    }
+
     public ClienteResponse findMine() {
         if (currentUserService.getCurrentRole() != RolUsuario.CLIENTE) {
             throw new ForbiddenException("Solo un cliente autenticado puede consultar este endpoint");
