@@ -37,6 +37,9 @@ public class RegistroMedico {
     @Column(name = "diagnostico")
     private String diagnostico;
 
+    @Column(name = "peso", nullable = false)
+    private Double peso;
+
     @Column(name = "medicamentos_recetados")
     private String medicamentosRecetados;
 

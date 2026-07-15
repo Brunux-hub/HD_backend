@@ -15,6 +15,7 @@ public class RegistroMedicoResponse {
     private Long idCita;
     private LocalDateTime fecha;
     private String diagnostico;
+    private Double peso;
     private String medicamentosRecetados;
     private String observaciones;
 }
