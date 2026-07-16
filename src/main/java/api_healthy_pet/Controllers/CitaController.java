@@ -42,7 +42,7 @@ public class CitaController {
     }
 
     @PostMapping("/citas")
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','CLIENTE')")
     public ResponseEntity<CitaResponse> create(@Valid @RequestBody CitaRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(citaService.create(request));
     }
@@ -54,7 +54,7 @@ public class CitaController {
     }
 
     @PatchMapping("/citas/{id}/estado")
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','VETERINARIO')")
     public ResponseEntity<CitaResponse> changeEstado(
             @PathVariable Long id,
             @Valid @RequestBody CitaEstadoRequest request

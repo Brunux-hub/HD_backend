@@ -33,7 +33,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         AuthResponse response = new AuthResponse();
-        response.setToken(jwtService.generateToken(userDetails));
+        response.setToken(jwtService.generateToken(userDetails, usuario.getIdUsuario(), usuario.getRol().name()));
         return response;
     }
 

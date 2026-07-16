@@ -29,7 +29,7 @@ public class ServicioController {
     private final ServicioService servicioService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','CLIENTE','VETERINARIO')")
     public ResponseEntity<List<ServicioResponse>> findAll() {
         return ResponseEntity.ok(servicioService.findAll());
     }

@@ -29,7 +29,7 @@ public class MascotaController {
     private final MascotaService mascotaService;
 
     @GetMapping("/mascotas")
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPCIONISTA','VETERINARIO')")
     public ResponseEntity<List<MascotaResponse>> findAll() {
         return ResponseEntity.ok(mascotaService.findAll());
     }
