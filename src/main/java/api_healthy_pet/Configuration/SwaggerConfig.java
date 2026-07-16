@@ -33,7 +33,6 @@ public class SwaggerConfig {
                         new Tag().name("Mascotas").description("Gestion de mascotas"),
                         new Tag().name("Citas").description("Gestion de citas"),
                         new Tag().name("Registros Medicos").description("Gestion de registros medicos"),
-                        new Tag().name("Tratamientos").description("Gestion de tratamientos"),
                         new Tag().name("Recetas").description("Gestion de recetas"),
                         new Tag().name("Items Receta").description("Gestion de items de receta")
                 ))

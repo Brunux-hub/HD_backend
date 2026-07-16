@@ -20,7 +20,5 @@ public class RegistroMedicoRequest {
     @Positive(message = "El peso debe ser mayor a 0")
     private Double peso;
 
-    private String medicamentosRecetados;
-
     private String observaciones;
 }

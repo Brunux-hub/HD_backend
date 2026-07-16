@@ -62,7 +62,6 @@ public class RegistroMedicoService {
         registroMedico.setFecha(LocalDateTime.now());
         registroMedico.setDiagnostico(request.getDiagnostico());
         registroMedico.setPeso(request.getPeso());
-        registroMedico.setMedicamentosRecetados(request.getMedicamentosRecetados());
         registroMedico.setObservaciones(request.getObservaciones());
         return registroMedicoMapper.toResponse(registroMedicoRepository.save(registroMedico));
     }
@@ -81,7 +80,6 @@ public class RegistroMedicoService {
         registroMedico.setCita(cita);
         registroMedico.setDiagnostico(request.getDiagnostico());
         registroMedico.setPeso(request.getPeso());
-        registroMedico.setMedicamentosRecetados(request.getMedicamentosRecetados());
         registroMedico.setObservaciones(request.getObservaciones());
         return registroMedicoMapper.toResponse(registroMedicoRepository.save(registroMedico));
     }

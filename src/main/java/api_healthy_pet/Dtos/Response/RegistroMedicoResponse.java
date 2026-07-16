@@ -1,5 +1,6 @@
 package api_healthy_pet.DTOs.response;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonPropertyOrder({"idRegistroMedico", "idCita", "fecha", "diagnostico", "peso", "observaciones"})
 public class RegistroMedicoResponse {
 
     private Long idRegistroMedico;
@@ -16,6 +18,5 @@ public class RegistroMedicoResponse {
     private LocalDateTime fecha;
     private String diagnostico;
     private Double peso;
-    private String medicamentosRecetados;
     private String observaciones;
 }
