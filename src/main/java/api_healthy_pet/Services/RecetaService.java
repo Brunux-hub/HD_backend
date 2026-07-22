@@ -12,15 +12,19 @@ import api_healthy_pet.Repositories.RecetaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RecetaService {
+
+    private static final Pattern NUMERO_RECETA_PATTERN = Pattern.compile("^REC-?(\\d{4})-(\\d+)$");
 
     private final RecetaRepository recetaRepository;
     private final RecetaMapper recetaMapper;
@@ -43,26 +47,23 @@ public class RecetaService {
 
     @Transactional
     public RecetaResponse create(RecetaRequest request) {
-        validateNumeroRecetaForCreate(request.getNumeroReceta());
         RegistroMedico registroMedico = registroMedicoService.getRegistroMedico(request.getIdRegistroMedico());
         registroMedicoService.validateWriteAccess(registroMedico);
 
         Receta receta = new Receta();
         receta.setRegistroMedico(registroMedico);
-        receta.setNumeroReceta(request.getNumeroReceta());
         receta.setFechaEmision(LocalDateTime.now());
+        receta.setNumeroReceta(generateNumeroReceta(LocalDate.now().getYear()));
         return recetaMapper.toResponse(recetaRepository.save(receta));
     }
 
     @Transactional
     public RecetaResponse update(Long idReceta, RecetaRequest request) {
         Receta receta = getReceta(idReceta);
-        validateNumeroRecetaForUpdate(request.getNumeroReceta(), idReceta);
         RegistroMedico registroMedico = registroMedicoService.getRegistroMedico(request.getIdRegistroMedico());
         registroMedicoService.validateWriteAccess(registroMedico);
 
         receta.setRegistroMedico(registroMedico);
-        receta.setNumeroReceta(request.getNumeroReceta());
         return recetaMapper.toResponse(recetaRepository.save(receta));
     }
 
@@ -81,16 +82,31 @@ public class RecetaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada"));
     }
 
-    private void validateNumeroRecetaForCreate(String numeroReceta) {
-        if (StringUtils.hasText(numeroReceta) && recetaRepository.existsByNumeroReceta(numeroReceta)) {
+    private String generateNumeroReceta(int year) {
+        int nextCorrelativo = recetaRepository.findAllNumeroReceta().stream()
+                .map(numeroReceta -> extractCorrelativo(numeroReceta, year))
+                .filter(correlativo -> correlativo > 0)
+                .max(Integer::compareTo)
+                .orElse(0) + 1;
+
+        String numeroReceta = "REC-%d-%03d".formatted(year, nextCorrelativo);
+        if (recetaRepository.existsByNumeroReceta(numeroReceta)) {
             throw new DuplicateResourceException("Ya existe una receta con ese numero");
         }
+        return numeroReceta;
     }
 
-    private void validateNumeroRecetaForUpdate(String numeroReceta, Long idReceta) {
-        if (StringUtils.hasText(numeroReceta)
-                && recetaRepository.existsByNumeroRecetaAndIdRecetaNot(numeroReceta, idReceta)) {
-            throw new DuplicateResourceException("Ya existe una receta con ese numero");
+    private int extractCorrelativo(String numeroReceta, int expectedYear) {
+        Matcher matcher = NUMERO_RECETA_PATTERN.matcher(numeroReceta);
+        if (!matcher.matches()) {
+            return -1;
         }
+
+        int year = Integer.parseInt(matcher.group(1));
+        if (year != expectedYear) {
+            return -1;
+        }
+
+        return Integer.parseInt(matcher.group(2));
     }
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonPropertyOrder({"idRegistroMedico", "idCita", "fecha", "diagnostico", "peso", "observaciones"})
+@JsonPropertyOrder({"idRegistroMedico", "idCita", "fecha", "diagnostico", "peso", "observaciones", "mascota"})
 public class RegistroMedicoResponse {
 
     private Long idRegistroMedico;
@@ -19,4 +19,5 @@ public class RegistroMedicoResponse {
     private String diagnostico;
     private Double peso;
     private String observaciones;
+    private MascotaResumenResponse mascota;
 }
