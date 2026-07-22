@@ -29,6 +29,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Recursos
+AGENTS.MD
+/src/main/resources/HealthyPets_Schema_2_Español.sql
+
 ### VS Code ###
 .vscode/
 

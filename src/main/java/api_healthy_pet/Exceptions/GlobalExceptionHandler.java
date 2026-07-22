@@ -1,79 +1,95 @@
 package api_healthy_pet.Exceptions;
 
-import api_healthy_pet.Dtos.Response.ErrorResponse;
+import api_healthy_pet.DTOs.response.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
-        HttpStatus status = resolveUserStatus(ex.getMessage());
-        return buildResponse(status, ex.getMessage());
-    }
-
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ErrorResponse> handleServiceException(ServiceException ex) {
-        HttpStatus status = resolveEntityStatus(ex.getMessage());
-        return buildResponse(status, ex.getMessage());
-    }
-
-    @ExceptionHandler(OwnerException.class)
-    public ResponseEntity<ErrorResponse> handleOwnerException(OwnerException ex) {
-        return buildResponse(resolveEntityStatus(ex.getMessage()), ex.getMessage());
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
-        return buildResponse(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta operación");
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-        FieldError fieldError = ex.getBindingResult().getFieldErrors().stream().findFirst().orElse(null);
-        String message = fieldError != null
-                ? fieldError.getField() + ": " + fieldError.getDefaultMessage()
-                : "La solicitud contiene datos inválidos";
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request
+    ) {
+        Map<String, String> errors = new LinkedHashMap<>();
+        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
 
-        return buildResponse(HttpStatus.BAD_REQUEST, message);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Solicitud invalida", request, errors);
     }
 
-    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(
-                new ErrorResponse(
-                        status.value(),
-                        status.getReasonPhrase(),
-                        message,
-                        LocalDateTime.now()
-                )
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+            ConstraintViolationException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(
+            ResourceNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler({
+            BadRequestException.class,
+            DuplicateResourceException.class
+    })
+    public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler({UnauthorizedException.class, BadCredentialsException.class})
+    public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler({ForbiddenException.class, AuthorizationDeniedException.class})
+    public ResponseEntity<ErrorResponse> handleForbidden(RuntimeException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocurrio un error interno al procesar la solicitud",
+                request,
+                null
         );
     }
 
-    private HttpStatus resolveUserStatus(String message) {
-        return resolveEntityStatus(message);
-    }
-
-    private HttpStatus resolveEntityStatus(String message) {
-        if (message != null && message.toLowerCase().contains("registrado")) {
-            return HttpStatus.CONFLICT;
-        }
-        if (message != null && message.toLowerCase().contains("no encontrado")) {
-            return HttpStatus.NOT_FOUND;
-        }
-        return HttpStatus.BAD_REQUEST;
+    private ResponseEntity<ErrorResponse> buildResponse(
+            HttpStatus status,
+            String message,
+            HttpServletRequest request,
+            Map<String, String> validationErrors
+    ) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                request.getRequestURI(),
+                validationErrors
+        );
+        return ResponseEntity.status(status).body(response);
     }
 }

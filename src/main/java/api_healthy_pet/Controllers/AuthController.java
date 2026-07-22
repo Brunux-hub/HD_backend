@@ -1,22 +1,23 @@
 package api_healthy_pet.Controllers;
 
-import api_healthy_pet.Dtos.Request.ClientRegisterRequest;
-import api_healthy_pet.Dtos.Request.LoginRequest;
-import api_healthy_pet.Dtos.Response.AuthResponse;
-import api_healthy_pet.Dtos.Response.MeResponse;
-import api_healthy_pet.Dtos.Response.OwnerResponse;
+import api_healthy_pet.DTOs.request.LoginRequest;
+import api_healthy_pet.DTOs.response.AuthMeResponse;
+import api_healthy_pet.DTOs.response.AuthResponse;
 import api_healthy_pet.Services.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -26,15 +27,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    // Registro público de clientes: crea User (login) + Owner (ficha).
-    @PostMapping("/register")
-    public ResponseEntity<OwnerResponse> register(@Valid @RequestBody ClientRegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerClient(request));
-    }
-
-    // Rol fino del usuario autenticado (para enrutar y ocultar secciones en el front).
     @GetMapping("/me")
-    public ResponseEntity<MeResponse> me(Principal principal) {
-        return ResponseEntity.ok(authService.me(principal.getName()));
+    public ResponseEntity<AuthMeResponse> me() {
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 }
